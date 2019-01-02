@@ -64,8 +64,7 @@ int CommItf::read(tMsgPacket *_pckt){
 int CommItf::createPacket(tMsgPacket *_reqPckt){
 
 		#if defined ESP_CH_UART
-		String raw_pckt_serial = readStringUntil(END_CMD);
-		memcpy(raw_pckt, raw_pckt_serial.c_str(),raw_pckt_serial.length());
+      Serial.readBytesUntil(END_CMD, raw_pckt, SPI_BUFFER_SIZE);
 		#endif
 		
 		int idx = 0;
@@ -165,30 +164,6 @@ void CommItf::SPISlaveWrite(uint8_t* _resPckt,int transfer_size){
 	}
 	processing = false;
 	data_received_size = 0;
-}
-#endif
-
-#if defined ESP_CH_UART
-int CommItf::timedRead(){
-	int c;
-	_startMillis = millis();
-	do {
-		c = Serial.read();
-		if (c >= 0) return c;
-	} while(millis() - _startMillis < _timeout);
-	return -1;     // -1 indicates timeout
-}
-
-String CommItf::readStringUntil(char terminator){
-	String ret;
-	int c = timedRead();
-
-	while (c >= 0 && (char)c != terminator)
-	{
-		ret += (char)c;
-		c = timedRead();
-	}
-	return ret;
 }
 #endif
 

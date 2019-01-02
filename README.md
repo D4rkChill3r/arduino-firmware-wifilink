@@ -26,22 +26,20 @@ Open or extract the downloaded zip and copy the folder ArduinoFirmwareEsp from z
 
 Start Arduino IDE and open the ArduinoFirmwareEsp.ino sketch. It opens additional files as tabs in IDE.
 
+![WiFiLink network port](https://github.com/jandrassy/arduino-firmware-wifilink/wiki/images/IDE-WiFiLink-fw.png)
+
 ### Board selection and Verify
 
 In Tools menu select board options and choose your board/shield/module or Generic ESP8266 from the ESP8266 section of the Boards menu. Set hardware depended options like crystal frequency, flash frequency, flash mode, flash size, led, reset.  
 
 Then choose esp8266 usage options:
 - CPU frequency option - recommended 80 MHz; 160 MHz produces more heat and has a higher power consumption
-- LwIP version - recommended v1.4; with 2.0 LwIP the Atmega sketch OTA upload fails, which indicates instability  
+- LwIP version - v2 Higher Bandwidth  
 - Debug options: Disable and None is the basic setting 
 - Optimal flash size selection for WiFi Link is "4M (1M SPIFFS)". at least 256 kB is needed for SPIFFS
 - "Erase flash" option is new in esp8266 Arduino package 2.4.1. To preserve SPIFFS and WiFi credentials use option "Sketch only". If changing from prebuild firmware, changing LwIP option or after a update to new version of esp8266 Arduino core package use "All flash content" to erase all parameters set be Espressif SDK. Erasing all SDK parameters can help if you experience WiFi connection stability issues.
 
-
 Now verify the sketch with the Verify button. The first compilation after changing the board will take time.
-
-From now on always check the selected board in the right bottom corner of the IDE window. 
-
 
 ### Upload
 
@@ -69,7 +67,7 @@ The AP network name is set as SSIDNAME in config.h. The WiFi Link fixed address 
 
 Warning: If you connect from sketch with WiFi.begin(ssid, pass), it changes the settings for the STA mode of the esp8266 for the Web Panel too. If you connect from sketch to unaccesible network or with wrong password, the Web Panel will not be accessible in STA mode.
 
-### OTA upload 
+### Firmware OTA upload 
 
 The WiFi Link firmware supports OTA upload of new version of the firmware binary. OTA upload will only work if some version of WiFi Link is working in the ESP8266 and is configured to STA or STA+AP mode.
 
@@ -87,31 +85,19 @@ WiFi Link firmware writes hostname and static IP settings into SPIFFS file confi
 
 If you have not default hostname or a static IP configured and you often upload the SPIFFS, download `http://<IP>/config.json` and add it to `data` subfolder of the WiFi Link firmware source codes. 
 
-### Atmega sketch OTA upload support
+### Atmega328p sketch OTA upload support
 
-The WiFi Link firmware build without `#define MCU_OTA` (config.h) doesn't support ATmega sketch OTA upload. To build from the source codes with `MCU_OTA` you need a library called dfu.
+*For ATmega boards with at least 64 kB flash and for some ARM boards (SAMD, nRF52), you can use [ArduinoOTA library](https://github.com/jandrassy/ArduinoOTA) for upload over network with WiFiLink installed.*
 
-For OTA with esp8266 module/board/shield, the reset pin of the ATmega must be [connected](https://github.com/jandrassy/arduino-firmware-wifilink/wiki/Test-Setup) to an ESP GPIO pin. Default in dfu library is GPIO5. You can change it to GPIO0, as it is on pinout header on most ESP modules. Star Otto and Uno WiFi have special setting hardcoded.
+The WiFi Link firmware build with `#define MCU_OTA` (config.h) supports ATmega328p sketch OTA upload. To build from the source codes with `MCU_OTA` you need a library called dfu. Download it [here](https://github.com/jandrassy/arduino-firmware-wifilink/wiki/lib/dfu.zip) and Install it to your libraries folder.
+
+For OTA with esp8266 module/board/shield, the reset pin of the ATmega must be [connected](https://github.com/jandrassy/arduino-firmware-wifilink/wiki/Test-Setup) to an ESP GPIO pin. Default in dfu library in esp8266-serial-arduinouno-hacked.cpp is GPIO5. You can change it to GPIO0, as it is on pinout header on most ESP modules. Star Otto and Uno WiFi have special setting hardcoded.
 
 Only settings for the ATmega328p with Uno bootloader (Optiboot) exist in the dfu library. 
 
-#### The dfu library
+Select "Arduino Uno WiFi" as board for network upload to Uno/Nano/Mini and other ATmega328p boards with Optiboot.
 
-The dfu library is not available in Library manager in IDE. The source code repository is on [GitHub](https://github.com/ciminaghi/libdfu/tree/arduino-debug). And it is not an arduino library. First running a script from arduino subfolder builds the [arduino version](https://github.com/jandrassy/arduino-firmware-wifilink/wiki/lib/dfu.zip). Install it to your libraries folder.
-
-#### Sketch OTA upload tool
-
-Tool for OTA uploading the Atmega sketch is a python script available in arduino.org [GitHub repository](https://github.com/arduino-org/arduino-tool-mcu-ota). To run it, you need Python 2.7, 3.x doesn't work. With python installed you can package the script as exe. Instructions are in the GitHub repository.
-
-A way to integrate the tool arduino-tool-mcu-ota into IDE is patching the platform.txt file in `hardware/arduino/avr` IDE installation folder of IDE.
-
-The platform.txt values to change are 
-```
-tools.avrdude.network_cmd={runtime.tools.arduinoOTA.path}/bin/arduino_mcuota
-tools.avrdude.upload.network_pattern="{network_cmd}" -i {serial.port} -p 80 -f "{build.path}/{build.project_name}.hex"
-```
-
-Put the tool executable to a location evaluated by tools.avrdude.network_cmd. In IDE 1.8.5 it is `hardware/tools/avr/bin` in installation folder of IDE.
+![WiFiLink network port](https://github.com/jandrassy/arduino-firmware-wifilink/wiki/images/UnoWiFi-netport.png)
 
 ## SPI connection
 

@@ -801,18 +801,8 @@ void CommLgc::startClient(){
 
 	if(_sock < MAX_SOCK_NUMBER) {
 		if(_prot == 0){
-			//TCP MODE
-			if(mapWiFiClients[_sock]){
-				WiFiClient wc;
-				mapWiFiClients[_sock] = wc;
-			}
 			result = mapWiFiClients[_sock].connect(_ip, _port);
 		} else {
-			//UDP MODE
-			if(mapWiFiUDP[_sock] == NULL){
-				WiFiUDP wu;
-				mapWiFiUDP[_sock] = wu;
-			}
 			result = mapWiFiUDP[_sock].beginPacket(_ip, _port);
 		}
 	}
