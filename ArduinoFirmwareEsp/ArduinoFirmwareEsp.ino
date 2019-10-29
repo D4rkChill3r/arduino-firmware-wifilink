@@ -115,10 +115,7 @@ void setWiFiConfig(){
     //set default AP
     String mac = WiFi.macAddress();
     String apSSID = String(SSIDNAME) + "-" + String(mac[9])+String(mac[10])+String(mac[12])+String(mac[13])+String(mac[15])+String(mac[16]);
-    char softApssid[18];
-    apSSID.toCharArray(softApssid, apSSID.length()+1);
-    //delay(1000);
-    WiFi.softAP(softApssid);
+    WiFi.softAP(apSSID.c_str());
     WiFi.softAPConfig(default_IP, default_IP, IPAddress(255, 255, 255, 0));   //set default ip for AP mode
   }
   //set STA mode
