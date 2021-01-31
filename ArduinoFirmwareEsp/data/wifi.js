@@ -1,7 +1,7 @@
 var currAp = "";
 var blockScan = 0;
 var attempt = 0;
-var networkAlert = "This action could need a reboot if you run a sketch that uses network connection. Do you want to proceed?";
+var networkAlert = "Diese Aktion erfordert einen Neustart. Möchten Sie fortfahren?";
 
 function createInputForAp(b) {
     if (b.essid == "" && b.rssi == 0) {
@@ -77,7 +77,7 @@ function scanResult() {
             }
             enableNetworkSelection();
             $("#spinner").setAttribute("hidden", "");
-            showNotification("Scan found " + d + " networks");
+            showNotification("" + d + " Netzwerke gefunden");
             var a = $("#connect-button");
             a.className = a.className.replace(" pure-button-disabled", "");
             if (scanTimeout != null) {
@@ -85,11 +85,11 @@ function scanResult() {
             }
         }
         else {
-            showWarning("AP's not found")
+            showWarning("Keine Netzwerke gefunden.")
         }
     }, function (b, a) {
         $("#spinner").setAttribute("hidden", "");
-        showWarning("Please rescan")
+        showWarning("Bitte erneut Scannen")
     })
 }
 
@@ -106,7 +106,7 @@ function scanAPs() {
         scanResult();
     }, function(b,a){
         $("#spinner").setAttribute("hidden", "");
-        showWarning("Error during scanning, please retry.")
+        showWarning("Fehler beim Scann, bitter erneut versuchen.")
     })
     
 }
@@ -114,41 +114,41 @@ function scanAPs() {
 function getStatus() {
     ajaxJsonSpin("GET", "connstatus", function (c) {
         if (c.status == "idle" || c.status == "connecting") {
-            $("#aps").innerHTML = "Connecting...";
-            showNotification("Connecting...");
+            $("#aps").innerHTML = "Verbinde...";
+            showNotification("Verbinde...");
             window.setTimeout(getStatus, 1000)
         }
         else {
             if (c.status == "got IP address") {
-                var a = "Connected! Got IP " + c.ip;
+                var a = "Verbunden! IP " + c.ip;
                 showNotification(a);
                 showWifiInfo(c);
                 blockScan = 0;
                 if (c.modechange == "yes") {
-                    var b = "esp will switch to STA-only mode in a few seconds";
+                    var b = "esp wechselt in wenigen Sekunden in den Nur-STA-Modus";
                     window.setTimeout(function () {
                         showNotification(b)
                     }, 4000)
                 }
                 $("#reconnect").removeAttribute("hidden");
-                $("#reconnect").innerHTML = 'If you are in the same network, go to <a href="http://' + c.ip + '/">' + c.ip + "</a>, else connect to network " + c.ssid + " first."
+                $("#reconnect").innerHTML = 'Wenn Sie sich im selben Netzwerk befinden, gehen Sie zu <a href="http://' + c.ip + '/">' + c.ip + "</a>, andernfalls stellen Sie eine Verbindung zum Netzwerk:" + c.ssid + " her."
             }
             else {
                 blockScan = 0;
-                showWarning("Connection failed");
-                $("#aps").innerHTML = 'Check password and selected AP. <a href="wifi.html">Go Back</a>'
+                showWarning("Verbindung fehlgeschlagen");
+                $("#aps").innerHTML = 'Überprüfen Sie das Passwort und den ausgewählten AP. <a href="wifi.html">Zurück</a>'
             }
         }
         enableNetworkSelection()
     }, function (b, a) {
         if (attempt < 3) {
-            showWarning("Problems in connection...I'm trying again");
+            showWarning("Verbindungsprobleme ... Ich versuche es erneut.");
             window.setTimeout(hideWarning, 3000);
             window.setTimeout(getStatus, 2000);
             attempt++;
         }
         else {
-            showWarning("Connection failed.\nConnect to AP");
+            showWarning("Verbindung fehlgeschlagen. \nVerbinde dich mit AP");
             attempt = 0;
             blockScan = 0;
         }
@@ -160,12 +160,12 @@ function changeWifiMode(a) {
         blockScan = 1;
         hideWarning();
         ajaxSpin("GET", "setmode?mode=" + a, function (b) {
-            showNotification("Mode changed");
+            showNotification("Modus gewechselt");
             window.setTimeout(getWifiInfo, 100);
             blockScan = 0;
             window.setTimeout(enableNetworkSelection, 500)
         }, function (c, b) { //b is the error message, sometimes is empty
-            showWarning("Error changing mode ");
+            showWarning("Fehler beim Moduswechsel");
             window.setTimeout(getWifiInfo, 100);
             blockScan = 0;
             window.setTimeout(enableNetworkSelection, 500)
@@ -178,7 +178,7 @@ function changeWifiAp(d) {
         d.preventDefault();
         var b = $("#wifi-passwd").value;
         var f = getSelectedEssid();
-        showNotification("Connecting to " + f);
+        showNotification("Verbinde mit " + f);
         var c = "connect?essid=" + encodeURIComponent(f) + "&passwd=" + encodeURIComponent(b);
         hideWarning();
         $("#reconnect").setAttribute("hidden", "");
@@ -191,12 +191,12 @@ function changeWifiAp(d) {
             if(h==1)
                 window.setTimeout(function(){
                     $("#spinner").removeAttribute("hidden");
-                    showNotification("Waiting for network change...");
+                    showNotification("Warte auf Netzwerkwechsel ...");
                     window.scrollTo(0, 0);
                     window.setTimeout(getStatus, 2000)
                 },10000);
         }, function (i, h) {
-            showWarning("Error switching network: " + h);
+            showWarning("Fehler beim Netzwerkwechsel: " + h);
             a.className = g;
 			blockScan = 0;
         })
@@ -217,12 +217,12 @@ function changeSpecial(c) {
         ajaxSpin("GET", b, function (d) {
             removeClass(a, "pure-button-disabled")
             if (d != 1) {
-                alert("New IP set, you will be redirect to: " + JSON.parse(d).url);
+                alert("IP gesetzt. Weiterleitung zu: " + JSON.parse(d).url);
                 setTimeout(document.location.href = "http://" + JSON.parse(d).url + "/wifi.html", 1000);
             }
-            else showNotification("DHCP set");
+            else showNotification("DHCP aktiviert");
         }, function (f, d) {
-            showWarning("Error: " + d);
+            showWarning("Fehler: " + d);
             removeClass(a, "pure-button-disabled");
             getWifiInfo();
         })
@@ -233,7 +233,7 @@ function changeHostname() {
     if (confirm(networkAlert)) {
         var a = $("#change-hostname-input").value;
         if (a == "") {
-            alert("Insert hostname!")
+            alert("Hostname eingeben!")
         }
         else {
             ajaxSpin("GET", "/system/update?name=" + a, function () {
@@ -244,7 +244,7 @@ function changeHostname() {
 }
 
 function showHostnameModal(b) {
-    var a = "Hostname changed in : " + b; //+ "\nYour board will be reboot to apply change";
+    var a = "Hostname geändert in : " + b; //+ "\nYour board will be reboot to apply change";
     var c = confirm(a);
     if (c == false) alert("Error in hostname change");
 }

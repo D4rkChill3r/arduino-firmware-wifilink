@@ -366,7 +366,7 @@ pre.console a {
     line-height: 4vh;
     padding-left: 2.5vh;
     text-transform: uppercase;
-    border-bottom: 1px solid #00979c
+    border-bottom: 1px solid #D8F781
 }
 .menu-link {
     position: fixed;
@@ -500,7 +500,7 @@ pre.console a {
 #version {
     font-size: 10pt;
     bottom: 0;
-    color: #00979c;
+    color: #D8F781;
     font-weight: normal !important;
     text-align: center;
     padding: 0 7%;
@@ -510,10 +510,10 @@ pre.console a {
     margin-top: 80%
 }
 hr {
-    border-color: #00979c
+    border-color: #D8F781
 }
 p.sub-menu-header {
-    color: #00979c !important;
+    color: #D8F781 !important;
     /*font-family: TyponineSansMonoText;*/
     font-size: 9pt;
     padding-left: 4%;
@@ -525,7 +525,7 @@ p.sub-menu-header {
 .pure-menu-link:hover,
 li.pure-menu-item.pure-menu-selected,
 li.pure-menu-item:hover {
-    background-color: #00979c !important
+    background-color: #D8F781 !important
 }
 td.td_key {
     color: #797979 !important

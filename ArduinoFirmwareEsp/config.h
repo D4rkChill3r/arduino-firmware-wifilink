@@ -24,12 +24,12 @@
 
 //#define MCU_OTA
 
-/*
+/*789/
  * Enable/Disable Debug
  */
 
-//#define DEBUG
-//#define BAUDRATE_DEBUG 115200
+#define DEBUG
+#define BAUDRATE_DEBUG 115200
 
 /*
  * Define board hostname

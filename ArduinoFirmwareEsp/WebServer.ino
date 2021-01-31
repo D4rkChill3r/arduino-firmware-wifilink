@@ -102,20 +102,20 @@ String toStringWifiStatus(int state) {
   String status;
   switch (state) {
     case 0:
-      status = "connecting";
+      status = "verbinde";
       break;
     case 1:
-      status = "unknown status";
+      status = "unbekannter status";
       break;
     case 2:
-      status = "wifi scan completed";
+      status = "wifi Scan abgeschlossen";
       break;
     case 3:
-      status = "got IP address";
+      status = "verbunden";
       // statements
       break;
     case 4:
-      status = "connection failed";
+      status = "verbindung fehlgeschlagen";
       break;
     default:
       break;
@@ -193,7 +193,7 @@ void initWebServer(){
     server.send(200, "text/plain", String("{\"ssid\":\"" + cur_ssid + "\",\"hostname\":\"" + WiFi.hostname() + "\",\"ip\":\"" + ipadd + "\",\"mode\":\"" + toStringWifiMode(WiFi.getMode()) + "\",\"chan\":\""
                                             + WiFi.channel() + "\",\"status\":\"" + toStringWifiStatus(WiFi.status()) + "\", \"gateway\":\"" + toStringIp(WiFi.gatewayIP()) + "\", \"netmask\":\"" + toStringIp(WiFi.subnetMask()) + "\",\"rssi\":\""
                                             + WiFi.RSSI() + "\",\"mac\":\"" + WiFi.macAddress() + "\",\"phy\":\"" + WiFi.getPhyMode() + "\", \"dhcp\": \"" + dhcp + "\", \"staticip\":\"" + staticadd +
-                                            + "\", \"warn\": \"" + "<a href='#' class='pure-button button-primary button-larger-margin' onclick='changeWifiMode(" + change + ")'>Switch to " + toStringWifiMode(change) + " mode</a>\""
+                                            + "\", \"warn\": \"" + "<a href='#' class='pure-button button-primary button-larger-margin' onclick='changeWifiMode(" + change + ")'>Wechsle in " + toStringWifiMode(change) + " Modus</a>\""
                                             + "}" ));
     });
 
